@@ -1,5 +1,6 @@
 import json
-from usingJSON import*
+from usingJSON import *
+
 
 def print_table(combinations):
     print(' ')
@@ -12,6 +13,27 @@ def print_table(combinations):
 # def print_table(combinations):
 #     for j in range(0, len(combinations)):
 #         print('  '.join(combinations))
+
+def DynamicCoins(array, camb, den, MasterList, amounts):
+    bestans = array[0][-1]
+
+    # while camb != 0:
+    #     for i in range(len(array)):
+    #         # for j in range(camb+1):
+    #             if amounts[i] > 0:
+    #                 if (camb - den[i]) >= 0:
+    #                     if MasterList[i][camb+1] < bestans:
+    #                         bestans = MasterList[i][camb+1]
+    #
+
+    while camb != 0:
+        for i in range(len(array)):
+            if amounts[i] > 0:
+                if (camb - den[i]) >= 0:
+                    if array[i][camb] < bestans:
+                        bestans = array[i][camb]
+                        print(bestans)
+
 
 def CoinChose(den, camb):
     # Create Dynamic Programming
@@ -50,7 +72,7 @@ def CoinChose(den, camb):
             combinations[i][j - 1] = CD[i][j]
 
     for i in range(moneda):
-        for j in range(monto+1):
+        for j in range(monto + 1):
             if j >= den[i]:
                 for k in range(i, moneda):
                     combinations[k][j] = combinations[i][j - den[i]] + 1
@@ -58,6 +80,7 @@ def CoinChose(den, camb):
     print(CD)
     print(combinations)
     print_table(combinations)
+    return combinations
 
 
 # User Input
@@ -65,12 +88,12 @@ def CoinChose(den, camb):
 MasterList = usingJSON()
 den = []
 amounts = []
-#Añade lista de denominaciones
+# Añade lista de denominaciones
 for i in range(len(MasterList)):
     den.append(MasterList[i][0])
 
 # Añade lista de cantidades de ese cambio
-for i in range(len(MasterList) - 1, 0 - 1, -1):
+for i in range(len(MasterList)):
     amounts.append(MasterList[i][1])
 
 # den = [1, 2, 5, 10, 20]
@@ -91,8 +114,12 @@ if cost == 0:
 
 # camb = 14
 
+# Creacion de arreglo
 array = CoinChose(den, camb)
 print(array)
+
+# Realizacion de Opreacion
+print(DynamicCoins(array, camb, den, MasterList, amounts))
 
 # JSON Operation
 print(usingJSON())
