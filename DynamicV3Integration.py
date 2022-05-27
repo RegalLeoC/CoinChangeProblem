@@ -15,6 +15,14 @@ def print_table(combinations):
 #         print('  '.join(combinations))
 
 def DynamicCoins(array, camb, den, MasterList, amounts, save):
+    total = 0
+    for i in range(len(den)):
+       total = (den[i] * amounts[i]) + total
+
+    if total < camb:
+        return "No hay suficiente cambio para la compra"
+
+
     bestans = [array[0][-1], 0, camb, 0]
 
     # while camb != 0:
@@ -42,50 +50,28 @@ def DynamicCoins(array, camb, den, MasterList, amounts, save):
 
 def CoinChose(den, camb):
     # Create Dynamic Programming
-    coin = len(den)
-    amount = camb + 2
 
-    CD = [[0 for j in range(amount)] for i in range(coin)]
-    sizeCD = len(CD)
+    table = [[0 for i in range(camb + 1)] for j in range(len(den))]
 
-    j = 0
-    i = 0
-    NewCD = CD
+    for i in range(1, camb + 1):
+        ones = 1 + table[0][i - 1]
+        table[0][i] = ones
 
-    for i in range(sizeCD):
-        NewCD[j][0] = den[i]
-        j = j + 1
-
-    for i in range(sizeCD):
-        for j in range(len(CD[0])):
-            if CD[i][0] == j:
-                CD[i][j + 1] = 1
-
-    # Crea el 1
-    for j in range(3, len(CD[0])):
-        CD[0][j] = CD[0][j - 1] + 1
-
-    # Crea el resto
-
-    combinations = [[0 for j in range(1, amount)] for i in range(coin)]
-    monto = camb
-    moneda = len(den)
-
-    # Lo chido
-    for i in range(len(CD)):
-        for j in range(1, len(CD[0])):
-            combinations[i][j - 1] = CD[i][j]
-
-    for i in range(moneda):
-        for j in range(monto + 1):
-            if j >= den[i]:
-                for k in range(i, moneda):
-                    combinations[k][j] = combinations[i][j - den[i]] + 1
+    for i in range(1, len(den)):
+        add = 1
+        for j in range(camb + 1):
+            if j < den[i]:
+                table[i][j] = table[i - 1][j]
+            elif j == den[i]:
+                table[i][j] = 1
+            elif j > den[i]:
+                table[i][j] = (table[i][j - (j - add)]) + 1
+                add = add + 1
 
     # print(CD)
     # print(combinations)
-    print_table(combinations)
-    return combinations
+    print_table(table)
+    return table
 
 
 # User Input
@@ -127,7 +113,10 @@ save = []
 # Realizacion de Opreacion
 end = (DynamicCoins(array, camb, den, MasterList, amounts, save))
 
-print(end[0])
+if type(end[0]) == type("s"):
+    print(end)
+else:
+    print(end[0])
 
 
 
